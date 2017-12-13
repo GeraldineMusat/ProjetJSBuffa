@@ -73,7 +73,7 @@ class ObjetGraphique {
     getPosition() {
         var coord = {'x' : this.x, 'y' : this.y};
 
-        switch(direction){
+        switch(this.direction){
             case DIRECTION.BAS : 
                 coord.y++;
                 break;
