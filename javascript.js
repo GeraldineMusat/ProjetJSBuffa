@@ -44,9 +44,7 @@ function GameFramework(){
     return {
         init:init,
         reset:reset,
-        creerDesChats:creerDesChats,
-        modifVitesse:modifVitesse,
-        modifCouleur:modifCouleur
+        creerPersonnage:creerPersonnage
     }
 }
 
