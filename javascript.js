@@ -4,10 +4,6 @@ var gf;
 function init(){
   gf = new GameFramework();
   gf.init();
-  window.onkeydown = function(event) {
-      //alert('test');
-      return false;
-  }
 }
 
 function GameFramework(){
@@ -21,12 +17,14 @@ function GameFramework(){
         this.h=canvas.height;
         requestAnimationFrame(anime);
     }
+    
+    
 
     function anime(timeElapsed){
         ctx.clearRect(0,0,this.w,this.h);
         tableauObjetGraphiques.forEach(function(r){
           r.draw(ctx);
-          //r.move();
+          r.move();
           //r.testCollisionZone(w,h);
         });
         requestAnimationFrame(anime);
@@ -70,10 +68,10 @@ class ObjetGraphique {
         ctx.restore();
     }
 
-    getPosition() {
+    getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
 
-        switch(this.direction){
+        switch(direction){
             case DIRECTION.BAS : 
                 coord.y++;
                 break;
@@ -90,16 +88,38 @@ class ObjetGraphique {
         return coord;
     }
 
-    deplacer(direction, map) {
-        this.direction = direction;
-        var prochaineCase = this.getPosition(direction);
-
-        if(prochaineCase.x > 0 || prochaineCase.y < 0 || prochaineCase.x >= map.getLargeur() || prochaineCase.y >= map.getHauteur()){
-            //booleen pour dire que le deplacement ne se fait pas 
+    move() {
+        var prochaineCase;
+        window.onkeydown = function(event) {
+            switch (event.keyCode || event.which) {
+                case 37:
+                console.log("gauche");
+                this.direction = DIRECTION.GAUCHE;
+                //prochaineCase = this.getPosition(this.direction);
+                break;
+            case 39:
+                console.log("droite");
+                this.direction = DIRECTION.DROITE;
+                //prochaineCase = this.getPosition(this.direction);
+                break;
+            case 38:
+                console.log("haut");
+                this.direction = DIRECTION.HAUT;
+                //prochaineCase = this.getPosition(this.direction);
+                break;
+            case 40:
+                console.log("bas");
+                this.direction = DIRECTION.BAS;
+                //prochaineCase = this.getPosition(this.direction);
+                break;
+            default:
+                break;
+            }
             return false;
         }
-
+        prochaineCase = this.getPosition(this.direction);
         //on effectue le deplacement 
+        
         this.x = prochaineCase.x;
         this.y = prochaineCase.y;
 
@@ -124,6 +144,11 @@ class Personnage extends ObjetGraphique {
     draw(ctx){
         this.dessineCorps(ctx);
         super.draw(ctx);
+    }
+
+    move() {
+        
+        super.move();
     }
 }
 
