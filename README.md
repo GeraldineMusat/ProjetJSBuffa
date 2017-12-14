@@ -1,14 +1,14 @@
 # ProjetJSBuffa
 
-Petite animation en JavaScript faisait réference à notre formation L3 Informatique MIAGE à Sopphia Antipolis
+Petite animation en JavaScript faisant réference à notre formation L3 Informatique parcours MIAGE à Sophia Antipolis
 
 Impératifs : 
-- Avoir de l'intéractivité avec la sourit ou la clavier 
+- Avoir de l'intéractivité avec la sourit ou le clavier 
 
 
-#### Projet en binome avec Habiba BOUJLA 
+#### Projet en binome avec Habiba BOUAJLA 
 
 Nous avons choisi de représenter un plan de nos locaux. 
-Le joueur se vera representé par un carré et pourra le deplacer via la clavier. 
-Il pourra parcourir la petite map, le petit plan et entrer en interaction avec des professeur représenter
-Il pourra leur poser des question via un choix multiple de question possible pour chaque professeur représenté 
+Le joueur se verra representer par un carré et pourra le deplacer via le clavier. 
+Il pourra parcourir la petite map, le petit plan et entrer en interaction avec des professeurs représentés.
+De plus, il pourra leur poser des questions via un choix multiple de question possible pour chaque professeur représenté.  
