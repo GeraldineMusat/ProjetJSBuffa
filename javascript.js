@@ -5,7 +5,7 @@ function init(){
   gf = new GameFramework();
   gf.init();
   window.onkeydown = function(event) {
-      alert('test');
+      //alert('test');
       return false;
   }
 }
@@ -17,13 +17,13 @@ function GameFramework(){
     function init() {
         canvas=document.querySelector("#myCanvas");
         ctx=canvas.getContext("2d");
-        w=canvas.width;
-        h=canvas.height;
+        this.w=canvas.width;
+        this.h=canvas.height;
         requestAnimationFrame(anime);
     }
 
     function anime(timeElapsed){
-        ctx.clearRect(0,0,w,h);
+        ctx.clearRect(0,0,this.w,this.h);
         tableauObjetGraphiques.forEach(function(r){
           r.draw(ctx);
           //r.move();
@@ -66,7 +66,7 @@ class ObjetGraphique {
 
     draw(ctx){
         ctx.save();
-        ctx.fillStyle("black");
+        //ctx.fillStyle("black");
         ctx.restore();
     }
 
@@ -114,7 +114,7 @@ class Personnage extends ObjetGraphique {
         super(posX, posY, 10, 10, DIRECTION.HAUT);
     }
 
-    dessineCorps(){
+    dessineCorps(ctx){
         ctx.save();
         ctx.fillStyle= "black";
         ctx.fillRect(this.x, this.y, this.height, this.width);
@@ -122,7 +122,7 @@ class Personnage extends ObjetGraphique {
     }
 
     draw(ctx){
-        this.dessineCorps();
+        this.dessineCorps(ctx);
         super.draw(ctx);
     }
 }
