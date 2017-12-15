@@ -1,6 +1,6 @@
 window.onload=init;
 var gf;
-let dir;
+let dir_event;
 
 function init(){
   gf = new GameFramework();
@@ -15,22 +15,22 @@ function GameFramework(){
         switch (event.keyCode || event.which) {
             case 37:
             console.log("gauche");
-            dir = DIRECTION.GAUCHE;
+            dir_event = DIRECTION.GAUCHE;
             //prochaineCase = this.getPosition(this.direction);
             break;
         case 39:
             console.log("droite");
-            dir = DIRECTION.DROITE;
+            dir_event = DIRECTION.DROITE;
             //prochaineCase = this.getPosition(this.direction);
             break;
         case 38:
             console.log("haut");
-            dir = DIRECTION.HAUT;
+            dir_event = DIRECTION.HAUT;
             //prochaineCase = this.getPosition(this.direction);
             break;
         case 40:
             console.log("bas");
-            dir = DIRECTION.BAS;
+            dir_event = DIRECTION.BAS;
             //prochaineCase = this.getPosition(this.direction);
             break;
         default:
@@ -49,7 +49,6 @@ function GameFramework(){
     }
 
     function anime(timeElapsed){
-        ctx.clearRect(0,0,this.w,this.h);
         tableauObjetGraphiques.forEach(function(r){
           r.draw(ctx);
           console.log("dans le anime");
@@ -89,19 +88,19 @@ class ObjetGraphique {
         this.y = positionY;
         this.width = largeur;
         this.height = hauteur;
-        this.direction = dir;
+        this.direction = dir_event;
     }
 
     draw(ctx){
         ctx.save();
-        //ctx.fillStyle("black");
+        
         ctx.restore();
     }
 
     getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
         console.log("dans le get Position");
-        this.direction = dir;
+        this.direction = dir_event;
         switch(direction){
             case DIRECTION.BAS : 
                 coord.y++;
@@ -124,7 +123,7 @@ class ObjetGraphique {
     move() {
         console.log("dans le move de onObjetGraphique");
         
-        var prochaineCase = this.getPosition(dir);
+        var prochaineCase = this.getPosition(dir_event);
         //on effectue le deplacement 
         
         this.x = prochaineCase.x;
@@ -149,8 +148,11 @@ class Personnage extends ObjetGraphique {
     }
 
     draw(ctx){
+        ctx.save();
+        ctx.clearRect(0,0,300, 300);
         this.dessineCorps(ctx);
-        super.draw(ctx);
+        //super.draw(ctx);
+        ctx.restore();
     }
 
     move() {
