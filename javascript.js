@@ -29,8 +29,6 @@ function GameFramework(){
             //console.log("bas");
             dir_event = DIRECTION.BAS;
             break;
-        default:
-            break;
         }
         return false;
     }
@@ -49,7 +47,7 @@ function GameFramework(){
           r.draw(ctx);
           //console.log("dans le anime");
           r.move();
-          //r.testCollisionZone(w,h);
+          r.testCollision();
         });
         requestAnimationFrame(anime);
     }
@@ -75,7 +73,8 @@ var DIRECTION = {
     "BAS"   :0,
     "GAUCHE":1,
     "DROITE":2,
-    "HAUT"  :3
+    "HAUT"  :3,
+    "STOP"  :4
 }
 
 class ObjetGraphique {
@@ -86,6 +85,7 @@ class ObjetGraphique {
         this.height = hauteur;
         this.direction = dir_event;
         this.map = new Map('Hall_entree.png');
+        this.vitesse = 5;
     }
 
     draw(ctx){
@@ -93,9 +93,10 @@ class ObjetGraphique {
 
     getZone_changeMap() {
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
-        var zone = {x: 2, y: 50, width: 30, height: 30};
+        var zone = {}; // zone pour aller dans les couloirs avec toutes les salles  
 
         if(this.map.img === 'Hall_entree.png'){
+            zone = {x: 0, y: 80, width: 50, height: 50};
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 // zone détectée !
                this.map.change_map("Map_sol.png");
@@ -104,31 +105,52 @@ class ObjetGraphique {
     }
 
     testCollision() {
-
+        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
+        var zone = {x: 0, y: 0, width: 600, height: 600}; // MAP / Canvas
+        if (perso.x - perso.width/2 < zone.x) { // collision détectée sur le coté gauche du canvas 
+            if(dir_event == DIRECTION.GAUCHE) {
+                return true;
+            } else {
+                return false;
+            }
+       }
+       // TO DO => les trois autres cotés 
+       
+       return false;
     }
 
     getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
-        console.log("x = "+this.x);
-        console.log("y = "+this.y);
-        //console.log("dans le get Position");
         this.getZone_changeMap();
         switch(direction){
-            case DIRECTION.BAS : 
-                coord.y++;
+            case DIRECTION.BAS :
+                if (!this.testCollision()){
+                    coord.y += this.vitesse;
+                } 
                 break;
             case DIRECTION.GAUCHE : 
-                coord.x--;
+                if (!this.testCollision()){
+                    coord.x -= this.vitesse;
+                }
                 break;
             case DIRECTION.DROITE : 
-                coord.x++;
+                if (!this.testCollision()){ 
+                    coord.x += this.vitesse;
+                }
                 break;
-            case DIRECTION.HAUT : 
-                coord.y--;
+            case DIRECTION.HAUT :
+                if (!this.testCollision()){
+                    coord.y -= this.vitesse;
+                }
+                break;
+            case DIRECTION.STOP :
+                this.vitesse = 0;
                 break;
             default :
                 break;
         }
+        this.vitesse = 5;
+        dir_event = DIRECTION.STOP;
         return coord;
     }
 
@@ -150,7 +172,7 @@ class ObjetGraphique {
 
 class Personnage extends ObjetGraphique {
     constructor (posX, posY){
-        super(posX, posY, 10, 10, null);
+        super(posX, posY, 20, 20, null);
     }
 
     dessineCorps(ctx){
@@ -162,7 +184,7 @@ class Personnage extends ObjetGraphique {
 
     draw(ctx){
         ctx.save();
-        ctx.clearRect(0,0,300, 300);
+        ctx.clearRect(0,0,600, 600);
         //this.map.draw_item(ctx);
         this.dessineCorps(ctx);
         ctx.restore();
@@ -193,7 +215,7 @@ class Map {
     }
 
     draw_map(img) {
-        var attribute = "background: url("+img+")";
+        var attribute = 'background: url('+img+') no-repeat';
         var canvas = document.getElementsByTagName('canvas')[0];
         canvas.setAttribute('style', attribute);
     }
@@ -208,4 +230,3 @@ function initialisationPerso() {
     gf.reset();
     gf.creerPersonnage();
 }
-
