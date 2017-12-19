@@ -126,10 +126,11 @@ class ObjetGraphique {
         var zone = {}; // zone pour aller dans les couloirs avec toutes les salles  
 
         if(this.map.img === 'Hall_entree.png'){
-            zone = {x: 0, y: 80, width: 50, height: 50};
+            zone = {x: 0, y: 120, width: 40, height: 60};
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 // zone détectée !
-               this.map.change_map("Map_sol.png");
+                this.map.change_map("Map_sol.png");
+                this.change_pos("Map_sol.png");
            }
         }
     }
@@ -208,15 +209,20 @@ class ObjetGraphique {
         
         var prochaineCase = this.getPosition(dir_event);
         //on effectue le deplacement 
-        console.log(dir_event);
-       
         this.x = prochaineCase.x;
         this.y = prochaineCase.y;
 
         return true;
     }
 
-    testCollisionZone(w,h){}
+    change_pos(img){
+        console.log("dans le change pos");
+        if(img === "Map_sol.png"){
+            console.log("dans le if du change pos");
+            this.x = 300;
+            this.y = 20;
+        }
+    }
 }
 
 class Personnage extends ObjetGraphique {
@@ -242,6 +248,12 @@ class Personnage extends ObjetGraphique {
     move() {
         //console.log("dans le move de Personnage");
         super.move();
+    }
+
+    change_pos(img){
+        
+        super.change_pos(img);
+
     }
 }
 
