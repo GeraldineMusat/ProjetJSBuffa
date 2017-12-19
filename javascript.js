@@ -118,11 +118,55 @@ class ObjetGraphique {
         this.width = largeur;
         this.height = hauteur;
         this.direction = dir_event;
-        this.map = new Map('Hall_entree.png');
         this.vitesse = 5;
     }
 
+    dessineCorps(ctx){
+        ctx.save();
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x, this.y, this.height, this.width);
+        ctx.restore();
+    }
+
     draw(ctx){
+        ctx.save();
+        ctx.clearRect(0,0,600, 600);
+        //this.map.draw_item(ctx);
+        this.dessineCorps(ctx);
+        ctx.restore();
+    }
+
+    move(prochaineCase) {
+        //console.log("dans le move de onObjetGraphique");
+        this.x = prochaineCase.x;
+        this.y = prochaineCase.y;
+    }
+}
+
+class Personnage extends ObjetGraphique {
+    constructor (posX, posY){
+        super(posX, posY, 20, 20, null);
+        this.map = new Map('Hall_entree.png');
+    }
+
+    move() {
+        //console.log("dans le move de Personnage");
+        if(this.map.img == "Map_sol.png" && change_pos){
+            this.x = 500;
+            this.y = 300;
+            change_pos = false; //pou la condition unique pour savoir si tu peux changer de pos ou pas 
+        }
+        if(this.map.img == "Hall_entree.png" && change_pos){
+            this.x = 130;
+            this.y = 155;
+            change_pos = false;
+        }
+        
+        var prochaineCase = this.getPosition(dir_event);
+        //on effectue le deplacement 
+        super.move(prochaineCase);
+
+        return true;
     }
 
     getZone_changeMap() {
@@ -218,53 +262,6 @@ class ObjetGraphique {
         this.vitesse = 5;
         dir_event = DIRECTION.STOP;
         return coord;
-    }
-
-    move() {
-        //console.log("dans le move de onObjetGraphique");
-        
-        var prochaineCase = this.getPosition(dir_event);
-        //on effectue le deplacement 
-        this.x = prochaineCase.x;
-        this.y = prochaineCase.y;
-
-        return true;
-    }
-}
-
-class Personnage extends ObjetGraphique {
-    constructor (posX, posY){
-        super(posX, posY, 20, 20, null);
-    }
-
-    dessineCorps(ctx){
-        ctx.save();
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y, this.height, this.width);
-        ctx.restore();
-    }
-
-    draw(ctx){
-        ctx.save();
-        ctx.clearRect(0,0,600, 600);
-        //this.map.draw_item(ctx);
-        this.dessineCorps(ctx);
-        ctx.restore();
-    }
-
-    move() {
-        //console.log("dans le move de Personnage");
-        if(this.map.img == "Map_sol.png" && change_pos){
-            this.x = 500;
-            this.y = 300;
-            change_pos = false; //pou la condition unique pour savoir si tu peux changer de pos ou pas 
-        }
-        if(this.map.img == "Hall_entree.png" && change_pos){
-            this.x = 130;
-            this.y = 155;
-            change_pos = false;
-        }
-        super.move();
     }
 }
 
