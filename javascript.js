@@ -1,6 +1,8 @@
 window.onload=init;
 var gf;
 let dir_event;
+let old_dir_event;
+let initialisation = false; //false quand il est pas encore initialisé (pas encore apuyé sur une des flèches du clavier)
 
 function init(){
   gf = new GameFramework();
@@ -15,19 +17,49 @@ function GameFramework(){
         switch (event.keyCode || event.which) {
             case 37:
             //console.log("gauche");
-            dir_event = DIRECTION.GAUCHE;
+            if(!initialisation){
+                old_dir_event = DIRECTION.GAUCHE;
+                dir_event = old_dir_event;
+                initialisation = true;
+            }else{
+                old_dir_event = dir_event;
+                dir_event = DIRECTION.GAUCHE;
+            }
             break;
         case 39:
             //console.log("droite");
-            dir_event = DIRECTION.DROITE;
+            if(!initialisation){
+                old_dir_event = DIRECTION.DROITE;
+                dir_event = old_dir_event;
+                initialisation = true;
+            }else{
+                old_dir_event = dir_event;
+                dir_event = DIRECTION.DROITE;
+            }
             break;
         case 38:
             //console.log("haut");
-            dir_event = DIRECTION.HAUT;
+            if(!initialisation){
+                old_dir_event = DIRECTION.HAUT;
+                dir_event = old_dir_event;
+                initialisation = true;
+            }else{
+                old_dir_event = dir_event;
+                dir_event = DIRECTION.HAUT;                
+            }
             break;
         case 40:
             //console.log("bas");
-            dir_event = DIRECTION.BAS;
+            if(!initialisation){
+                old_dir_event = DIRECTION.BAS;
+                dir_event = old_dir_event;
+                initialisation = true;
+            }else{
+                old_dir_event = dir_event;
+                dir_event = DIRECTION.BAS;
+            }
+            break;
+        default : 
             break;
         }
         return false;
@@ -45,9 +77,7 @@ function GameFramework(){
     function anime(timeElapsed){
         tableauObjetGraphiques.forEach(function(r){
           r.draw(ctx);
-          //console.log("dans le anime");
           r.move();
-          r.testCollision();
         });
         requestAnimationFrame(anime);
     }
@@ -104,18 +134,37 @@ class ObjetGraphique {
         }
     }
 
-    testCollision() {
+    testCollision() { // Collisions faites pour les 4 cotés du Canvas 
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
         var zone = {x: 0, y: 0, width: 600, height: 600}; // MAP / Canvas
         if (perso.x - perso.width/2 < zone.x) { // collision détectée sur le coté gauche du canvas 
-            if(dir_event == DIRECTION.GAUCHE) {
+            if(dir_event == DIRECTION.GAUCHE){
                 return true;
             } else {
                 return false;
             }
        }
-       // TO DO => les trois autres cotés 
-       
+       if(perso.y - perso.height/2 < zone.y) { // collision detectée sur le haut du canvas 
+            if(dir_event == DIRECTION.HAUT) {
+                return true;
+            }else{
+                return false;
+            }
+       }
+       if(perso.x + perso.width >= zone.width){ // collision detectée sur le coté droit du canvas
+           if(dir_event == DIRECTION.DROITE){
+               return true;
+           }else{
+               return false;
+           }
+       }
+       if(perso.y + perso.height >= zone.height){ // collision detectée sur le bas du canvas 
+           if(dir_event == DIRECTION.BAS){
+               return true;
+           }else{
+               return false;
+           }
+       }
        return false;
     }
 
