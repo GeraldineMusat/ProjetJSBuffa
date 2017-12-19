@@ -4,6 +4,7 @@ let dir_event;
 let old_dir_event;
 let initialisation = false; //false quand il est pas encore initialisé (pas encore apuyé sur une des flèches du clavier)
 let change_pos = false;
+let map;
 
 function init(){
   gf = new GameFramework();
@@ -89,7 +90,10 @@ function GameFramework(){
     function creerPersonnage(){
         //console.log("Dans creer perso");
         let perso = new Personnage(this.w/2, this.h/2);//posX et posY
+        let pnj_1 = new PNJ(541,472,"acceuil");
+        map = new Map();
         tableauObjetGraphiques.push(perso);
+        tableauObjetGraphiques.push(pnj_1);
     }
 
     function reset() {
@@ -119,6 +123,7 @@ class ObjetGraphique {
         this.height = hauteur;
         this.direction = dir_event;
         this.vitesse = 5;
+        this.old_pos = {x: this.x-this.width, y: this.y-this.height, width: this.width, height: this.height};
     }
 
     dessineCorps(ctx){
@@ -130,14 +135,17 @@ class ObjetGraphique {
 
     draw(ctx){
         ctx.save();
-        ctx.clearRect(0,0,600, 600);
+        ctx.clearRect(this.old_pos.x - 1, this.old_pos.y - 1, this.old_pos.x + this.old_pos.width + 1, this.old_pos.y + this.old_pos.height + 1);
         //this.map.draw_item(ctx);
+        //ctx.fillRect(490,342,300,40);
         this.dessineCorps(ctx);
         ctx.restore();
     }
 
     move(prochaineCase) {
-        //console.log("dans le move de onObjetGraphique");
+        //console.log("dans le move de ObjetGraphique");
+        this.old_pos.x = this.x;
+        this.old_pos.y = this.y;
         this.x = prochaineCase.x;
         this.y = prochaineCase.y;
     }
@@ -145,18 +153,17 @@ class ObjetGraphique {
 
 class Personnage extends ObjetGraphique {
     constructor (posX, posY){
-        super(posX, posY, 20, 20, null);
-        this.map = new Map('Hall_entree.png');
+        super(posX, posY, 20, 20);
     }
 
     move() {
         //console.log("dans le move de Personnage");
-        if(this.map.img == "Map_sol.png" && change_pos){
+        if(map.img == "Map_sol.png" && change_pos){
             this.x = 500;
             this.y = 300;
             change_pos = false; //pou la condition unique pour savoir si tu peux changer de pos ou pas 
         }
-        if(this.map.img == "Hall_entree.png" && change_pos){
+        if(map.img == "Hall_entree.png" && change_pos){
             this.x = 130;
             this.y = 155;
             change_pos = false;
@@ -173,28 +180,28 @@ class Personnage extends ObjetGraphique {
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         var zone = {}; // zone pour aller dans les couloirs avec toutes les salles  
 
-        if(this.map.img === 'Hall_entree.png'){
+        if(map.img === 'Hall_entree.png'){
             zone = {x: 0, y: 120, width: 40, height: 60};
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 // zone détectée !
-                this.map.change_map("Map_sol.png");
+                map.change_map("Map_sol.png");
             }
         }
-        if(this.map.img === "Map_sol.png"){
+        if(map.img === "Map_sol.png"){
             zone = {x: 579, y: 250, width: 40, height: 100};
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 // zone détectée !
-                this.map.change_map("Hall_entree.png");
+                map.change_map("Hall_entree.png");
             }
         }
     }
 
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
-        if(this.map.img == "Map_sol.png"){
+        if(map.img == "Map_sol.png"){
             var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
             var zone = {x: 10, y: 180, width: 590, height: 235}; // MAP / Canvas
         }
-        if(this.map.img == "Hall_entree.png"){
+        if(map.img == "Hall_entree.png"){
             var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
             var zone = {x: 0, y: 0, width: 600, height: 600}; // MAP / Canvas
         }
@@ -204,28 +211,37 @@ class Personnage extends ObjetGraphique {
             } else {
                 return false;
             }
-       }
-       if(perso.y - perso.height/2 < zone.y) { // collision detectée sur le haut du canvas 
-            if(dir_event == DIRECTION.HAUT) {
+        }
+        if(perso.y - perso.height/2 < zone.y) { // collision detectée sur le haut du canvas 
+                if(dir_event == DIRECTION.HAUT) {
+                    return true;
+                }else{
+                    return false;
+                }
+        }
+        if(perso.x + perso.width >= zone.x + zone.width){ // collision detectée sur le coté droit du canvas
+            if(dir_event == DIRECTION.DROITE){
                 return true;
             }else{
                 return false;
             }
-       }
-       if(perso.x + perso.width >= zone.x + zone.width){ // collision detectée sur le coté droit du canvas
-           if(dir_event == DIRECTION.DROITE){
-               return true;
-           }else{
-               return false;
-           }
-       }
-       if(perso.y + perso.height >= zone.y + zone.height){ // collision detectée sur le bas du canvas 
-           if(dir_event == DIRECTION.BAS){
-               return true;
-           }else{
-               return false;
-           }
-       }
+        }
+        if(perso.y + perso.height >= zone.y + zone.height){ // collision detectée sur le bas du canvas 
+            if(dir_event == DIRECTION.BAS){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        if(map.img === "Hall_entree.png"){
+            var accueil_haut = {x: 489, y: 341, width: 300, height: 200}; //zone sur le haut de l'accueil
+            if (perso.x < accueil_haut.x + accueil_haut.width && perso.x + perso.width > accueil_haut.x && perso.y < accueil_haut.y + accueil_haut.height && perso.height + perso.y > accueil_haut.y) {
+                if(dir_event == DIRECTION.BAS || dir_event == DIRECTION.DROITE){
+                    // zone détectée !
+                    return true;
+                }
+            }
+        }
        return false;
     }
 
@@ -265,12 +281,25 @@ class Personnage extends ObjetGraphique {
     }
 }
 
+class PNJ extends ObjetGraphique { //PNJ = Personnage Non Joueur
+    constructor (posX, posY, name) {
+        super(posX, posY, 20, 20);
+        this.nom = name;
+    }
+
+    move() {
+        var coord = {'x' : this.x, 'y' : this.y};
+        var prochaineCase = coord;
+        super.move(prochaineCase);
+    }
+}
+
 class Map {
-    constructor (chemin_image) {
+    constructor () {
         //console.log("dans le constructeut de map")
         //Elle aura un nom/lien image
         //Elle aura un tableau pour les collisions
-        this.img = chemin_image;
+        this.img = 'Hall_entree.png';
         this.draw_map(this.img);
     }
 
