@@ -196,6 +196,36 @@ class Personnage extends ObjetGraphique {
         }
     }
 
+    getZone_dialogue(show_dialogue) {
+        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
+        if(map.img === "Hall_entree.png"){
+            var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
+            if (perso.x < zone_dialogue_accueil.x + zone_dialogue_accueil.width && perso.x + perso.width > zone_dialogue_accueil.x && perso.y < zone_dialogue_accueil.y + zone_dialogue_accueil.height && perso.height + perso.y > zone_dialogue_accueil.y) {
+                // zone détectée 
+                show_dialogue = true;
+            }else{
+                show_dialogue = false;
+            }
+            if(show_dialogue){
+                var p = document.getElementsByTagName('p')[4];
+                p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+                var select = document.getElementsByTagName('select')[1];
+                select.setAttribute('style', "");
+                var html_code = "";
+                html_code +="<h2>Bonjour, comment puis-je t'aider ?</h2>";
+                p.innerHTML = html_code;
+                html_code ="<option value=\"Q1\">Comment se passe l'inscription ici pour la L3 ?</option>";
+                html_code +="<option value=\"Q2\">Ou se trouve le self ?</option>";
+                select.innerHTML = html_code;
+            }else{
+                var p = document.getElementsByTagName('p')[4];
+                p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
+                var select = document.getElementsByTagName('select')[1];
+                select.setAttribute('style', "display:none;");
+            }
+        }
+    }
+
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
         if(map.img == "Map_sol.png"){
             var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
@@ -248,6 +278,7 @@ class Personnage extends ObjetGraphique {
     getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
         this.getZone_changeMap();
+        this.getZone_dialogue();
         switch(direction){
             case DIRECTION.BAS :
                 if (!this.testCollision()){
@@ -296,9 +327,6 @@ class PNJ extends ObjetGraphique { //PNJ = Personnage Non Joueur
 
 class Map {
     constructor () {
-        //console.log("dans le constructeut de map")
-        //Elle aura un nom/lien image
-        //Elle aura un tableau pour les collisions
         this.img = 'Hall_entree.png';
         this.draw_map(this.img);
     }
