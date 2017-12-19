@@ -14,56 +14,58 @@ function GameFramework(){
     let canvas, ctx, w, h;
     let tableauObjetGraphiques=[];
 
-    window.onkeydown = function(event) {
-        switch (event.keyCode || event.which) {
-            case 37:
-            //console.log("gauche");
-            if(!initialisation){
-                old_dir_event = DIRECTION.GAUCHE;
-                dir_event = old_dir_event;
-                initialisation = true;
-            }else{
-                old_dir_event = dir_event;
-                dir_event = DIRECTION.GAUCHE;
+    function initKey() {
+        window.onkeydown = function(event) {
+            switch (event.keyCode || event.which) {
+                case 37:
+                //console.log("gauche");
+                if(!initialisation){
+                    old_dir_event = DIRECTION.GAUCHE;
+                    dir_event = old_dir_event;
+                    initialisation = true;
+                }else{
+                    old_dir_event = dir_event;
+                    dir_event = DIRECTION.GAUCHE;
+                }
+                break;
+            case 39:
+                //console.log("droite");
+                if(!initialisation){
+                    old_dir_event = DIRECTION.DROITE;
+                    dir_event = old_dir_event;
+                    initialisation = true;
+                }else{
+                    old_dir_event = dir_event;
+                    dir_event = DIRECTION.DROITE;
+                }
+                break;
+            case 38:
+                //console.log("haut");
+                if(!initialisation){
+                    old_dir_event = DIRECTION.HAUT;
+                    dir_event = old_dir_event;
+                    initialisation = true;
+                }else{
+                    old_dir_event = dir_event;
+                    dir_event = DIRECTION.HAUT;                
+                }
+                break;
+            case 40:
+                //console.log("bas");
+                if(!initialisation){
+                    old_dir_event = DIRECTION.BAS;
+                    dir_event = old_dir_event;
+                    initialisation = true;
+                }else{
+                    old_dir_event = dir_event;
+                    dir_event = DIRECTION.BAS;
+                }
+                break;
+            default : 
+                break;
             }
-            break;
-        case 39:
-            //console.log("droite");
-            if(!initialisation){
-                old_dir_event = DIRECTION.DROITE;
-                dir_event = old_dir_event;
-                initialisation = true;
-            }else{
-                old_dir_event = dir_event;
-                dir_event = DIRECTION.DROITE;
-            }
-            break;
-        case 38:
-            //console.log("haut");
-            if(!initialisation){
-                old_dir_event = DIRECTION.HAUT;
-                dir_event = old_dir_event;
-                initialisation = true;
-            }else{
-                old_dir_event = dir_event;
-                dir_event = DIRECTION.HAUT;                
-            }
-            break;
-        case 40:
-            //console.log("bas");
-            if(!initialisation){
-                old_dir_event = DIRECTION.BAS;
-                dir_event = old_dir_event;
-                initialisation = true;
-            }else{
-                old_dir_event = dir_event;
-                dir_event = DIRECTION.BAS;
-            }
-            break;
-        default : 
-            break;
+            return false;
         }
-        return false;
     }
 
     function init() {
@@ -71,6 +73,7 @@ function GameFramework(){
         ctx=canvas.getContext("2d");
         this.w=canvas.width;
         this.h=canvas.height;
+        initKey();
         //console.log("dans le init");
         requestAnimationFrame(anime);
     }
@@ -131,15 +134,21 @@ class ObjetGraphique {
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 // zone détectée !
                 this.map.change_map("Map_sol.png");
-                this.change_pos("Map_sol.png");
-           }
+            }
+        }
+        if(this.map.img === "Map_sol.png"){
+            zone = {x: 579, y: 250, width: 40, height: 100};
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                // zone détectée !
+                this.map.change_map("Hall_entree.png");
+            }
         }
     }
 
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
         if(this.map.img == "Map_sol.png"){
             var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
-            var zone = {x: 10, y: 180, width: 235, height: 590}; // MAP / Canvas
+            var zone = {x: 10, y: 180, width: 590, height: 235}; // MAP / Canvas
         }
         if(this.map.img == "Hall_entree.png"){
             var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
@@ -159,14 +168,14 @@ class ObjetGraphique {
                 return false;
             }
        }
-       if(perso.x + perso.width >= zone.width){ // collision detectée sur le coté droit du canvas
+       if(perso.x + perso.width >= zone.x + zone.width){ // collision detectée sur le coté droit du canvas
            if(dir_event == DIRECTION.DROITE){
                return true;
            }else{
                return false;
            }
        }
-       if(perso.y + perso.height >= zone.height){ // collision detectée sur le bas du canvas 
+       if(perso.y + perso.height >= zone.y + zone.height){ // collision detectée sur le bas du canvas 
            if(dir_event == DIRECTION.BAS){
                return true;
            }else{
@@ -221,16 +230,6 @@ class ObjetGraphique {
 
         return true;
     }
-
-    change_pos(img){
-        console.log("dans le change pos");
-        /*if(img === "Map_sol.png"){
-            console.log("dans le if du change pos");
-            this.x = 300;
-            this.y = 20;
-            console.log(this.x);
-        }*/
-    }
 }
 
 class Personnage extends ObjetGraphique {
@@ -256,15 +255,16 @@ class Personnage extends ObjetGraphique {
     move() {
         //console.log("dans le move de Personnage");
         if(this.map.img == "Map_sol.png" && change_pos){
-            this.x = 580;
+            this.x = 500;
             this.y = 300;
             change_pos = false; //pou la condition unique pour savoir si tu peux changer de pos ou pas 
         }
+        if(this.map.img == "Hall_entree.png" && change_pos){
+            this.x = 130;
+            this.y = 155;
+            change_pos = false;
+        }
         super.move();
-    }
-
-    change_pos(img){
-        super.change_pos(img);
     }
 }
 
