@@ -3,6 +3,7 @@ var gf;
 let dir_event;
 let old_dir_event;
 let initialisation = false; //false quand il est pas encore initialisé (pas encore apuyé sur une des flèches du clavier)
+let change_pos = false;
 
 function init(){
   gf = new GameFramework();
@@ -136,8 +137,14 @@ class ObjetGraphique {
     }
 
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
-        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
-        var zone = {x: 0, y: 0, width: 600, height: 600}; // MAP / Canvas
+        if(this.map.img == "Map_sol.png"){
+            var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
+            var zone = {x: 10, y: 180, width: 235, height: 590}; // MAP / Canvas
+        }
+        if(this.map.img == "Hall_entree.png"){
+            var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; // perso
+            var zone = {x: 0, y: 0, width: 600, height: 600}; // MAP / Canvas
+        }
         if (perso.x - perso.width/2 < zone.x) { // collision détectée sur le coté gauche du canvas 
             if(dir_event == DIRECTION.GAUCHE){
                 return true;
@@ -217,11 +224,12 @@ class ObjetGraphique {
 
     change_pos(img){
         console.log("dans le change pos");
-        if(img === "Map_sol.png"){
+        /*if(img === "Map_sol.png"){
             console.log("dans le if du change pos");
             this.x = 300;
             this.y = 20;
-        }
+            console.log(this.x);
+        }*/
     }
 }
 
@@ -247,13 +255,16 @@ class Personnage extends ObjetGraphique {
 
     move() {
         //console.log("dans le move de Personnage");
+        if(this.map.img == "Map_sol.png" && change_pos){
+            this.x = 580;
+            this.y = 300;
+            change_pos = false; //pou la condition unique pour savoir si tu peux changer de pos ou pas 
+        }
         super.move();
     }
 
     change_pos(img){
-        
         super.change_pos(img);
-
     }
 }
 
@@ -284,6 +295,7 @@ class Map {
     change_map(img){
         this.img = img;
         this.draw_map(this.img);
+        change_pos = true;
     }
 }
 
