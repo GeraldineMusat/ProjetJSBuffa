@@ -81,7 +81,10 @@ function GameFramework(){
 
     function anime(timeElapsed){
         tableauObjetGraphiques.forEach(function(r){
-          r.draw(ctx);
+            r.draw(ctx);
+        });
+        tableauObjetGraphiques.forEach(function(r){
+          r.dessineCorps(ctx);
           r.move();
         });
         requestAnimationFrame(anime);
@@ -91,7 +94,7 @@ function GameFramework(){
         //console.log("Dans creer perso");
         let perso = new Personnage(this.w/2, this.h/2);//posX et posY
         let pnj_1 = new PNJ(541,472,"acceuil");
-        map = new Map();
+        map = new Map(ctx);
         tableauObjetGraphiques.push(perso);
         tableauObjetGraphiques.push(pnj_1);
     }
@@ -135,10 +138,11 @@ class ObjetGraphique {
 
     draw(ctx){
         ctx.save();
-        ctx.clearRect(this.old_pos.x - 1, this.old_pos.y - 1, this.old_pos.x + this.old_pos.width + 1, this.old_pos.y + this.old_pos.height + 1);
+        //ctx.clearRect(this.old_pos.x - 1, this.old_pos.y - 1, this.old_pos.x + this.old_pos.width + 1, this.old_pos.y + this.old_pos.height + 1);
+        ctx.clearRect(0,0,600,600);
         //this.map.draw_item(ctx);
         //ctx.fillRect(490,342,300,40);
-        this.dessineCorps(ctx);
+        //this.dessineCorps(ctx);
         ctx.restore();
     }
 
@@ -196,7 +200,20 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    getZone_dialogue(show_dialogue) {
+    initialisationDialogue() {
+        var p = document.getElementsByTagName('p')[4];
+        p.innerHTML = "";
+        p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
+        var select = document.getElementsByTagName('select')[1];
+        var option_1 = document.getElementsByTagName('option')[5]; //Q1
+        var option_2 = document.getElementsByTagName('option')[6]; //Q2
+        option_1.innerHTML=""; //Q1
+        option_2.innerHTML=""; //Q2
+        select.setAttribute('style', "display:none;");
+        return false;
+    }
+
+    getZone_dialogue(show_dialogue) { //TO DO => pb : reinitialisation du dialogue quand le perso quitte la zone 
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         if(map.img === "Hall_entree.png"){
             var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
@@ -214,14 +231,31 @@ class Personnage extends ObjetGraphique {
                 var html_code = "";
                 html_code +="<h2>Bonjour, comment puis-je t'aider ?</h2>";
                 p.innerHTML = html_code;
-                html_code ="<option value=\"Q1\">Comment se passe l'inscription ici pour la L3 ?</option>";
-                html_code +="<option value=\"Q2\">Ou se trouve le self ?</option>";
-                select.innerHTML = html_code;
-            }else{
+                var option_1 = document.getElementsByTagName('option')[5]; //Q1
+                var option_2 = document.getElementsByTagName('option')[6]; //Q2
+                option_1.innerHTML="Comment se passe l'inscription ici pour la L3 ?"; //Q1
+                option_2.innerHTML="Ou se trouve le self ?"; //Q2
+                var valeur = select.options[select.selectedIndex].value;
+                if(valeur != "Q0"){
+                    //console.log(valeur);
+                    select.setAttribute('style', "display:none;");
+                    if(valeur === "Q1"){
+                        p.innerHTML = "<h3>Via notre site internet</h3>";
+                    }
+                    if(valeur === "Q2"){
+                        p.innerHTML = "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>";
+                    }
+                }
+            }else{ // pour quand le personnage principal part de la zone de dialogue, tout se masque 
                 var p = document.getElementsByTagName('p')[4];
+                p.innerHTML = "";
                 p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
                 var select = document.getElementsByTagName('select')[1];
                 select.setAttribute('style', "display:none;");
+                var option_1 = document.getElementsByTagName('option')[5]; //Q1
+                var option_2 = document.getElementsByTagName('option')[6]; //Q2
+                option_1.innerHTML=""; //Q1
+                option_2.innerHTML=""; //Q2
             }
         }
     }
@@ -264,7 +298,7 @@ class Personnage extends ObjetGraphique {
             }
         }
         if(map.img === "Hall_entree.png"){
-            var accueil_haut = {x: 489, y: 341, width: 300, height: 200}; //zone sur le haut de l'accueil
+            var accueil_haut = {x: 489, y: 341, width: 300, height: 200}; //zone de l'accueil 
             if (perso.x < accueil_haut.x + accueil_haut.width && perso.x + perso.width > accueil_haut.x && perso.y < accueil_haut.y + accueil_haut.height && perso.height + perso.y > accueil_haut.y) {
                 if(dir_event == DIRECTION.BAS || dir_event == DIRECTION.DROITE){
                     // zone détectée !
@@ -278,7 +312,7 @@ class Personnage extends ObjetGraphique {
     getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
         this.getZone_changeMap();
-        this.getZone_dialogue();
+        this.getZone_dialogue(this.initialisationDialogue());
         switch(direction){
             case DIRECTION.BAS :
                 if (!this.testCollision()){
@@ -326,9 +360,10 @@ class PNJ extends ObjetGraphique { //PNJ = Personnage Non Joueur
 }
 
 class Map {
-    constructor () {
+    constructor (ctx) {
         this.img = 'Hall_entree.png';
-        this.draw_map(this.img);
+        this.draw_map(this.img, ctx);
+        this.ctx = ctx;
     }
 
     draw_item(ctx) {
@@ -340,15 +375,16 @@ class Map {
         //img.src = 'testTileSet.png';
     }
 
-    draw_map(img) {
+    draw_map(img, ctx) {
         var attribute = 'background: url('+img+') no-repeat';
         var canvas = document.getElementsByTagName('canvas')[0];
         canvas.setAttribute('style', attribute);
+        //ctx.clearRect(0,0,600,600);
     }
 
     change_map(img){
         this.img = img;
-        this.draw_map(this.img);
+        this.draw_map(this.img, this.ctx);
         change_pos = true;
     }
 }
