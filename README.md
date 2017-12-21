@@ -2,8 +2,8 @@
 
 Petite animation en JavaScript faisant réference à notre formation L3 Informatique parcours MIAGE à Sophia Antipolis
 
-Impératifs : 
-- Avoir de l'intéractivité avec la sourit ou le clavier 
+Impératif : 
+- Avoir de l'intéractivité avec la souris ou le clavier 
 
 
 #### Projet en binome avec Habiba BOUAJLA 

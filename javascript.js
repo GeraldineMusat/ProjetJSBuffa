@@ -140,9 +140,6 @@ class ObjetGraphique {
         ctx.save();
         //ctx.clearRect(this.old_pos.x - 1, this.old_pos.y - 1, this.old_pos.x + this.old_pos.width + 1, this.old_pos.y + this.old_pos.height + 1);
         ctx.clearRect(0,0,600,600);
-        //this.map.draw_item(ctx);
-        //ctx.fillRect(490,342,300,40);
-        //this.dessineCorps(ctx);
         ctx.restore();
     }
 
@@ -183,7 +180,6 @@ class Personnage extends ObjetGraphique {
     getZone_changeMap() {
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         var zone = {}; // zone pour aller dans les couloirs avec toutes les salles  
-
         if(map.img === 'Hall_entree.png'){
             zone = {x: 0, y: 120, width: 40, height: 60};
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
@@ -200,21 +196,14 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    initialisationDialogue() {
+    getZone_dialogue() {
+        var show_dialogue = false;
+        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         var p = document.getElementsByTagName('p')[4];
-        p.innerHTML = "";
-        p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
+        var p_2 = document.getElementsByTagName('p')[5];
         var select = document.getElementsByTagName('select')[1];
         var option_1 = document.getElementsByTagName('option')[5]; //Q1
         var option_2 = document.getElementsByTagName('option')[6]; //Q2
-        option_1.innerHTML=""; //Q1
-        option_2.innerHTML=""; //Q2
-        select.setAttribute('style', "display:none;");
-        return false;
-    }
-
-    getZone_dialogue(show_dialogue) { //TO DO => pb : reinitialisation du dialogue quand le perso quitte la zone 
-        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         if(map.img === "Hall_entree.png"){
             var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
             if (perso.x < zone_dialogue_accueil.x + zone_dialogue_accueil.width && perso.x + perso.width > zone_dialogue_accueil.x && perso.y < zone_dialogue_accueil.y + zone_dialogue_accueil.height && perso.height + perso.y > zone_dialogue_accueil.y) {
@@ -224,38 +213,34 @@ class Personnage extends ObjetGraphique {
                 show_dialogue = false;
             }
             if(show_dialogue){
-                var p = document.getElementsByTagName('p')[4];
+                
                 p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
-                var select = document.getElementsByTagName('select')[1];
+                p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+                
                 select.setAttribute('style', "");
                 var html_code = "";
                 html_code +="<h2>Bonjour, comment puis-je t'aider ?</h2>";
                 p.innerHTML = html_code;
-                var option_1 = document.getElementsByTagName('option')[5]; //Q1
-                var option_2 = document.getElementsByTagName('option')[6]; //Q2
+                
                 option_1.innerHTML="Comment se passe l'inscription ici pour la L3 ?"; //Q1
                 option_2.innerHTML="Ou se trouve le self ?"; //Q2
                 var valeur = select.options[select.selectedIndex].value;
                 if(valeur != "Q0"){
-                    //console.log(valeur);
-                    select.setAttribute('style', "display:none;");
+                    var button = document.getElementsByTagName('input')[1];
                     if(valeur === "Q1"){
-                        p.innerHTML = "<h3>Via notre site internet</h3>";
+                        p_2.innerHTML = "<h3>Via notre site internet</h3>";;
                     }
                     if(valeur === "Q2"){
-                        p.innerHTML = "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>";
+                        p_2.innerHTML = "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>";
                     }
                 }
-            }else{ // pour quand le personnage principal part de la zone de dialogue, tout se masque 
-                var p = document.getElementsByTagName('p')[4];
+            }else{
                 p.innerHTML = "";
                 p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
-                var select = document.getElementsByTagName('select')[1];
-                select.setAttribute('style', "display:none;");
-                var option_1 = document.getElementsByTagName('option')[5]; //Q1
-                var option_2 = document.getElementsByTagName('option')[6]; //Q2
                 option_1.innerHTML=""; //Q1
                 option_2.innerHTML=""; //Q2
+                select.setAttribute('style', "display:none;");
+                p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
             }
         }
     }
@@ -312,7 +297,7 @@ class Personnage extends ObjetGraphique {
     getPosition(direction) {
         var coord = {'x' : this.x, 'y' : this.y};
         this.getZone_changeMap();
-        this.getZone_dialogue(this.initialisationDialogue());
+        this.getZone_dialogue();
         switch(direction){
             case DIRECTION.BAS :
                 if (!this.testCollision()){
@@ -379,7 +364,6 @@ class Map {
         var attribute = 'background: url('+img+') no-repeat';
         var canvas = document.getElementsByTagName('canvas')[0];
         canvas.setAttribute('style', attribute);
-        //ctx.clearRect(0,0,600,600);
     }
 
     change_map(img){
@@ -393,3 +377,4 @@ function initialisationPerso() {
     gf.reset();
     gf.creerPersonnage();
 }
+
