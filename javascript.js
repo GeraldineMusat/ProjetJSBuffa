@@ -81,7 +81,7 @@ function GameFramework(){
 
     function anime(timeElapsed){
         tableauObjetGraphiques.forEach(function(r){
-            r.draw(ctx);
+            r.clear(ctx);
         });
         tableauObjetGraphiques.forEach(function(r){
           r.dessineCorps(ctx);
@@ -90,9 +90,9 @@ function GameFramework(){
         requestAnimationFrame(anime);
     }
 
-    function creerPersonnage(){
+    function creerPersonnage(nom, age, formation){
         //console.log("Dans creer perso");
-        let perso = new Personnage(this.w/2, this.h/2);//posX et posY
+        let perso = new Personnage(this.w/2, this.h/2, nom, age, formation);//posX et posY
         let pnj_1 = new PNJ(541,472,"acceuil");
         map = new Map(ctx);
         tableauObjetGraphiques.push(perso);
@@ -136,7 +136,7 @@ class ObjetGraphique {
         ctx.restore();
     }
 
-    draw(ctx){
+    clear(ctx){
         ctx.save();
         //ctx.clearRect(this.old_pos.x - 1, this.old_pos.y - 1, this.old_pos.x + this.old_pos.width + 1, this.old_pos.y + this.old_pos.height + 1);
         ctx.clearRect(0,0,600,600);
@@ -153,8 +153,11 @@ class ObjetGraphique {
 }
 
 class Personnage extends ObjetGraphique {
-    constructor (posX, posY){
+    constructor (posX, posY, nom, age, formation){
         super(posX, posY, 20, 20);
+        this.nom = nom;
+        this.age = age;
+        this.formation = formation;
     }
 
     move() {
@@ -199,11 +202,11 @@ class Personnage extends ObjetGraphique {
     getZone_dialogue() {
         var show_dialogue = false;
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
-        var p = document.getElementsByTagName('p')[4];
-        var p_2 = document.getElementsByTagName('p')[5];
-        var select = document.getElementsByTagName('select')[1];
-        var option_1 = document.getElementsByTagName('option')[5]; //Q1
-        var option_2 = document.getElementsByTagName('option')[6]; //Q2
+        var p = document.getElementsByTagName('p')[0];
+        var p_2 = document.getElementsByTagName('p')[1];
+        var select = document.getElementsByTagName('select')[0];
+        var option_1 = document.getElementsByTagName('option')[1]; //Q1
+        var option_2 = document.getElementsByTagName('option')[2]; //Q2
         if(map.img === "Hall_entree.png"){
             var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
             if (perso.x < zone_dialogue_accueil.x + zone_dialogue_accueil.width && perso.x + perso.width > zone_dialogue_accueil.x && perso.y < zone_dialogue_accueil.y + zone_dialogue_accueil.height && perso.height + perso.y > zone_dialogue_accueil.y) {
@@ -219,14 +222,14 @@ class Personnage extends ObjetGraphique {
                 
                 select.setAttribute('style', "");
                 var html_code = "";
-                html_code +="<h2>Bonjour, comment puis-je t'aider ?</h2>";
+                html_code +="<h2>Bonjour "+ this.nom +", comment puis-je t'aider ?</h2>";
                 p.innerHTML = html_code;
                 
                 option_1.innerHTML="Comment se passe l'inscription ici pour la L3 ?"; //Q1
                 option_2.innerHTML="Ou se trouve le self ?"; //Q2
                 var valeur = select.options[select.selectedIndex].value;
                 if(valeur != "Q0"){
-                    var button = document.getElementsByTagName('input')[1];
+                    //var button = document.getElementsByTagName('input')[1];
                     if(valeur === "Q1"){
                         p_2.innerHTML = "<h3>Via notre site internet</h3>";;
                     }
@@ -373,8 +376,29 @@ class Map {
     }
 }
 
+function twRequeteVariable(sVariable) { //fonction trouvé sur ce site interent => http://www.trucsweb.com/tutoriels/javascript/tw303/
+    // Éliminer le "?"
+    var sReq = window.location.search.substring(1);
+    // Matrice de la requête
+    var aReq = sReq.split("&");
+    // Boucle les variables
+    for (var i=0;i<aReq.length;i++) {
+      // Matrice de la variables / valeur
+      var aVar = aReq[i].split("=");
+      // Retourne la valeur si la variable 
+      // demandée = la variable de la boucle
+      if(aVar[0] == sVariable){return aVar[1];}
+    }
+    // Aucune variable de trouvée.
+    return(false);
+}
+
 function initialisationPerso() {
+    var nom = twRequeteVariable("nom");
+    var age = twRequeteVariable("age");
+    var formation = twRequeteVariable("formation");
+    console.log("nom : "+nom +" age : "+ age +" formation : "+ formation );
     gf.reset();
-    gf.creerPersonnage();
+    gf.creerPersonnage(nom, age, formation);
 }
 

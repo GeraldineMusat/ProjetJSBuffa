@@ -3,58 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <script type="text/javascript" src="javascript.js"></script>
   <link rel="stylesheet" href="css.css"/>
   <title>Projet Porte Ouverte MIAGE</title>
 </head>
 <body>
-    <p>
-        <label>
-            Ton nom : 
-            <input type="texte" width=5>
-        </label>
-    </p>
-    <p>
-        <label>
-            Ton age : 
-            <input type="number" width=5>
-        </label>
-    </p>
-    <p>
-        <label>
-            Ton niveau de formation : 
-            <select name=\"CSS\">
+    <form name="information" action="jeu.html">
+        Ton nom : <input name="nom" type="texte" width=5>
+        Ton age : <input name="age" type="number" width=5>
+        Ton niveau de formation : 
+            <select name="formation">
                 <option value="L2">L2</option>
                 <option value="L3">L3</option>
                 <option value="M1">M1</option>
                 <option value="M2">M2</option>
             </select>
             MIAGE
-        </label>
-    </p>
-    <p>
-        <label>
-            <input type="button" value="GO !" onclick="initialisationPerso();"/>
-        </label>
-    </p>
+        <input type="submit" value="GO !"/>
+    </form>
     <br/>
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    <canvas width=600 height=600 id="myCanvas"></canvas>
-                </td>
-                <td>
-                    <p style="display:none;"></p>
-                    <select name="" style="display:none;">
-                        <option value="Q0">Clique et selectionne ta question !</option>
-                        <option value="Q1"></option>
-                        <option value="Q2"></option>
-                    </select>
-                    <p style="display:none;"></p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </body>
 </html>
