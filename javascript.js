@@ -254,7 +254,7 @@ class Personnage extends ObjetGraphique {
                 "Vous etes un professeur ?",
                 "<h3>Via notre site internet</h3>",
                 "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
-                "buffa.jpg"
+                "accueil.jpg"
             ];
             this.config_dialogue(zone_dialogue_accueil, tab_phrases);
 
@@ -277,7 +277,7 @@ class Personnage extends ObjetGraphique {
                 "Vous etes un professeur ?",
                 "<h3>Oui dans chaque salle</h3>",
                 "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
-                "buffa.jpg"
+                "tounsi.jpg"
             ];
             this.config_dialogue(zone_dialogue_Tounsi, tab_phrases);
         }
