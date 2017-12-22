@@ -11,62 +11,6 @@ function init(){
   gf.init();
 }
 
-
-// function verifNom(champ)
-// {
-//     if(champ.value.length < 2 || champ.value.length > 25)
-//     {
-//         surligne(champ, true);
-//         return false;
-//     }
-//     else
-//     {
-//         surligne(champ, false);
-//         return true;
-//     }
-// }
-//
-// function verifAge(champ)
-// {
-//     var age = parseInt(champ.value);
-//     if(isNaN(age) || age < 5 || age > 111)
-//     {
-//         surligne(champ, true);
-//         return false;
-//     }
-//     else
-//     {
-//         surligne(champ, false);
-//         return true;
-//     }
-// }
-//
-// function verifForm(f)
-// {
-//     var nomOk = verifNom(f.nom);
-//     var ageOk = verifAge(f.age);
-//
-//     if(nomOk && ageOk)
-//         return true;
-//     else
-//     {
-//         alert("Veuillez remplir correctement tous les champs");
-//         return false;
-//     }
-// }
-
-function check(){
-    var inputs = document.getElementsByTagName('input'),
-        inputsLength = inputs.length;
-
-    for (var i = 0; i < inputsLength; i++) {
-        if (inputs[i].type === 'radio' && inputs[i].checked) {
-            alert('Je suis en ' + inputs[i].value);
-        }
-    }
-}
-
-
 function GameFramework(){
     let canvas, ctx, w, h;
     let tableauObjetGraphiques=[];
