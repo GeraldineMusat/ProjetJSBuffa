@@ -95,10 +95,12 @@ function GameFramework(){
         let perso = new Personnage(this.w/2, this.h/2, nom, age, formation);//posX et posY
         let pnj_1 = new PNJ(541,472,"acceuil", POSTE.MAP_ENTREE);
         let pnj_2 = new PNJ(350,300, "Tounsi", POSTE.MAP_SALLE);
+        let pnj_3 = new PNJ(220,350,"Buffa", POSTE.MAP_ENTREE);
         map = new Map(ctx);
         tableauObjetGraphiques.push(perso);
         tableauObjetGraphiques.push(pnj_1);
         tableauObjetGraphiques.push(pnj_2);
+        tableauObjetGraphiques.push(pnj_3);
     }
 
     function reset() {
@@ -201,91 +203,83 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    getZone_dialogue() {
-        var show_dialogue = false;
+    config_dialogue(zone, tab){
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         var p = document.getElementsByTagName('p')[0];
         var p_2 = document.getElementsByTagName('p')[1];
         var select = document.getElementsByTagName('select')[0];
         var option_1 = document.getElementsByTagName('option')[1]; //Q1
         var option_2 = document.getElementsByTagName('option')[2]; //Q2
+        //var img = document.getElementsByTagName('img')[0];
+        if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+            // zone détectée 
+            console.log(tab[0]);
+            //img.setAttribute('style', "");
+            p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+            p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+            select.setAttribute('style', "");
+            p.innerHTML = tab[0];
+            option_1.innerHTML=tab[1]; //Q1
+            option_2.innerHTML=tab[2]; //Q2
+            var valeur = select.options[select.selectedIndex].value;
+            if(valeur != "Q0"){
+                //var button = document.getElementsByTagName('input')[1];
+                if(valeur === "Q1"){
+                    p_2.innerHTML = tab[3];
+                }
+                if(valeur === "Q2"){
+                    p_2.innerHTML = tab[4];
+                }
+            }
+            //img.setAttribute('scr', tab[5]);
+        }else{
+            p.innerHTML = "";
+            p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
+            option_1.innerHTML=""; //Q1
+            option_2.innerHTML=""; //Q2
+            select.setAttribute('style', "display:none;");
+            p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
+            //img.setAttribute('src', "");
+            //img.setAttribute('style', "display:none;");
+        }
+    }
+
+    getZone_dialogue() {
+        
         if(map.img === "Hall_entree.png"){
             var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
-            if (perso.x < zone_dialogue_accueil.x + zone_dialogue_accueil.width && perso.x + perso.width > zone_dialogue_accueil.x && perso.y < zone_dialogue_accueil.y + zone_dialogue_accueil.height && perso.height + perso.y > zone_dialogue_accueil.y) {
-                // zone détectée 
-                show_dialogue = true;
-            }else{
-                show_dialogue = false;
-            }
-            if(show_dialogue){
-                
-                p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
-                p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
-                
-                select.setAttribute('style', "");
-                var html_code = "";
-                html_code +="<h2>Bonjour "+ this.nom +", comment puis-je t'aider ?</h2>";
-                p.innerHTML = html_code;
-                
-                option_1.innerHTML="Comment se passe l'inscription ici pour la L3 ?"; //Q1
-                option_2.innerHTML="Ou se trouve le self ?"; //Q2
-                var valeur = select.options[select.selectedIndex].value;
-                if(valeur != "Q0"){
-                    //var button = document.getElementsByTagName('input')[1];
-                    if(valeur === "Q1"){
-                        p_2.innerHTML = "<h3>Via notre site internet</h3>";;
-                    }
-                    if(valeur === "Q2"){
-                        p_2.innerHTML = "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>";
-                    }
-                }
-            }else{
-                p.innerHTML = "";
-                p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
-                option_1.innerHTML=""; //Q1
-                option_2.innerHTML=""; //Q2
-                select.setAttribute('style', "display:none;");
-                p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
-            }
+            var tab_phrases = [
+                "<h2>Bonjour "+ this.nom +", comment puis-je t'aider ?</h2>",
+                "Ou se trouve le self ?",
+                "Vous etes un professeur ?",
+                "<h3>Via notre site internet</h3>",
+                "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
+                "buffa.jpg"
+            ];
+            this.config_dialogue(zone_dialogue_accueil, tab_phrases);
+
+            var zone_dialogue_Buffa = {x: 170, y: 300, width: 100, height: 100};
+            var tab_phrases = [
+                "<h2>Hello I am Buffa ! I have a very good accent ! And the Js is SO fun !!</h2>",
+                "Quelles sont vos méthodes de travail en Miage ? Plutôt en groupe, plutôt en solitaire ?",
+                "Quels sont les profils des étudiants qui intègrent l’école ?",
+                "<h3>En MIAGE, nos méthodes de travail sont les travails en groupe et seuls afin de développer des compétences pour le  monde le professionel.</h3>",
+                "<h3>Les profits des étudiants qui intègrent l'école sont : <br/> -des étudiants provenant d'un cursus informatique <br/> -des étudiants provenant d'un cursus de gestion</h3>",
+                "buffa.jpg"
+            ];
+            this.config_dialogue(zone_dialogue_Buffa, tab_phrases);
         }
         if(map.img === "Map_sol.png"){
             var zone_dialogue_Tounsi = {x: 300, y: 250, width: 100, height: 100};
-            if (perso.x < zone_dialogue_Tounsi.x + zone_dialogue_Tounsi.width && perso.x + perso.width > zone_dialogue_Tounsi.x && perso.y < zone_dialogue_Tounsi.y + zone_dialogue_Tounsi.height && perso.height + perso.y > zone_dialogue_Tounsi.y) {
-                // zone détectée 
-                show_dialogue = true;
-            }else{
-                show_dialogue = false;
-            }
-            if(show_dialogue){
-                
-                p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
-                p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
-                
-                select.setAttribute('style', "");
-                var html_code = "";
-                html_code +="<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>";
-                p.innerHTML = html_code;
-                
-                option_1.innerHTML="Il y a le chauffage ?"; //Q1
-                option_2.innerHTML="Vous etes un professeur ?"; //Q2
-                var valeur = select.options[select.selectedIndex].value;
-                if(valeur != "Q0"){
-                    //var button = document.getElementsByTagName('input')[1];
-                    if(valeur === "Q1"){
-                        p_2.innerHTML = "<h3>Oui dans chaque salle</h3>";;
-                    }
-                    if(valeur === "Q2"){
-                        p_2.innerHTML = "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>";
-                    }
-                }
-            }else{
-                p.innerHTML = "";
-                p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
-                option_1.innerHTML=""; //Q1
-                option_2.innerHTML=""; //Q2
-                select.setAttribute('style', "display:none;");
-                p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
-            }
+            var tab_phrases = [
+                "<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>",
+                "Il y a le chauffage ?",
+                "Vous etes un professeur ?",
+                "<h3>Oui dans chaque salle</h3>",
+                "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
+                "buffa.jpg"
+            ];
+            this.config_dialogue(zone_dialogue_Tounsi, tab_phrases);
         }
     }
 
