@@ -96,11 +96,15 @@ function GameFramework(){
         let pnj_1 = new PNJ(541,472,"acceuil", POSTE.MAP_ENTREE);
         let pnj_2 = new PNJ(350,300, "Tounsi", POSTE.MAP_SALLE);
         let pnj_3 = new PNJ(220,350,"Buffa", POSTE.MAP_ENTREE);
+        let pnj_4 = new PNJ(450,100, "Habiba", POSTE.MAP_ENTREE);
+        let pnj_5 = new PNJ(450,150, "Geraldine", POSTE.MAP_SALLE);
         map = new Map(ctx);
         tableauObjetGraphiques.push(perso);
         tableauObjetGraphiques.push(pnj_1);
         tableauObjetGraphiques.push(pnj_2);
         tableauObjetGraphiques.push(pnj_3);
+        tableauObjetGraphiques.push(pnj_4);
+        tableauObjetGraphiques.push(pnj_5); 
     }
 
     function reset() {
@@ -203,7 +207,7 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    config_dialogue(zone, tab, p, p_2, select, option_1, option_2, img){
+    config_dialogue(zone, tab, p, p_2, select, option_1, option_2, img, h3){
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         
         if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
@@ -213,6 +217,7 @@ class Personnage extends ObjetGraphique {
             p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
             p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
             select.setAttribute('style', "");
+            h3.setAttribute('style', "");
             p.innerHTML = tab[0];
             option_1.innerHTML=tab[1]; //Q1
             option_2.innerHTML=tab[2]; //Q2
@@ -226,6 +231,7 @@ class Personnage extends ObjetGraphique {
                 }
             }
             img.setAttribute('src', tab[5]);
+            h3.innerHTML=tab[6];
             return true;
         }else{
            return false;
@@ -240,11 +246,13 @@ class Personnage extends ObjetGraphique {
         var select = document.getElementsByTagName('select')[0];
         var option_1 = document.getElementsByTagName('option')[1]; //Q1
         var option_2 = document.getElementsByTagName('option')[2]; //Q2
+        var h3 = document.getElementsByTagName('h3')[0];
         var val_ret;
         var zone;
         if(map.img === "Hall_entree.png"){
             var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
             var zone_dialogue_Buffa = {x: 170, y: 300, width: 100, height: 100};
+            var zone_dialogue_Habiba = {x:400, y:50, width: 100, height:100}; 
             zone = zone_dialogue_accueil;
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 var tab_phrases = [
@@ -253,9 +261,23 @@ class Personnage extends ObjetGraphique {
                     "Vous etes un professeur ?",
                     "<h3>Via notre site internet</h3>",
                     "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
-                    "accueil.jpg"
+                    "accueil.jpg",
+                    "Dame de l'accueil"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_accueil, tab_phrases, p, p_2, select, option_1, option_2,img);
+                val_ret = this.config_dialogue(zone_dialogue_accueil, tab_phrases, p, p_2, select, option_1, option_2,img,h3);
+            }
+            zone = zone_dialogue_Habiba; 
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                var tab_phrases = [
+                    "<h2>Salut "+ this.nom +", je suis Habiba, une étudiante en L3 MIAGE, comment puis-je t'aider ?</h2>",
+                    "Quels sont les effectifs en L3 MIAGE?",
+                    "Quels sont les différents cours dispensés?",
+                    "<h3> Les effectifs en L3 MIAGE sont de 50 étudiants. </h3>",
+                    "<h3>-Un module générale : avec les matières scientifiques, de communication, d'étude de marché <br/> -Un module informatique: php, js, java, base de données <br/>-Stage : expérience professionnelle de 3 à 6 mois</h3>",
+                    "habiba.jpg",
+                    "Etudiante Habiba"
+                ];
+                val_ret = this.config_dialogue(zone_dialogue_Habiba, tab_phrases, p, p_2, select, option_1, option_2,img,h3);
             }
             zone = zone_dialogue_Buffa;
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
@@ -265,24 +287,40 @@ class Personnage extends ObjetGraphique {
                     "Quels sont les profils des étudiants qui intègrent l’école ?",
                     "<h3>En MIAGE, nos méthodes de travail sont les travails en groupe et seuls afin de développer des compétences pour le  monde le professionel.</h3>",
                     "<h3>Les profits des étudiants qui intègrent l'école sont : <br/> -des étudiants provenant d'un cursus informatique <br/> -des étudiants provenant d'un cursus de gestion</h3>",
-                    "buffa.jpg"
+                    "buffa.jpg",
+                    "Professeur Mr Michel Buffa"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_Buffa, tab_phrases, p, p_2, select, option_1, option_2,img);
+                val_ret = this.config_dialogue(zone_dialogue_Buffa, tab_phrases, p, p_2, select, option_1, option_2,img,h3);
             }
         }
         if(map.img === "Map_sol.png"){
             var zone_dialogue_Tounsi = {x: 300, y: 250, width: 100, height: 100};
+            var zone_dialogue_Geraldine = {x: 400, y: 100, width: 100, height: 100};
             zone = zone_dialogue_Tounsi;
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
                 var tab_phrases = [
-                    "<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>",
-                    "Il y a le chauffage ?",
-                    "Vous etes un professeur ?",
-                    "<h3>Oui dans chaque salle</h3>",
-                    "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
-                    "tounsi.jpg"
+                    "<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, voici une partie des salles de classe</h2>",
+                    "Quels sont les masters proposés?",
+                    "Peut-on faire de l’alternance en master?",
+                    "<h3>Très bonne question ! C'est le nerf de la guerre ca jeune "+ this.nom +" ! <br/>Les masters proposés sont : <br/> - NTDP (Nouvelles Technologies et Direction de Projets). <br/> - SIRIS (Systèmes d'Information et Management du Risque). <br/> - MBDS (Mobiquité, Bases de Données et Intégration de Systèmes). <br/> - SD (Sciences de la Décision).<br/> La MIAGE c'est très très bien, c'est magnifique.</h3>",
+                    "<h3>Dès septembre l'alternance en Master 1 et 2 est possible, c'est pas beau ça ?</h3>",
+                    "tounsi.jpg",
+                    "Professeur Mr Stéphane Tounsi"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_Tounsi, tab_phrases, p, p_2, select, option_1, option_2,img);
+                val_ret = this.config_dialogue(zone_dialogue_Tounsi, tab_phrases, p, p_2, select, option_1, option_2,img,h3);
+            }
+            zone = zone_dialogue_Geraldine;
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                var tab_phrases = [
+                    "<h2>Hello ! Je suis Geraldine, nous avons avec Habiba réalisé ce jeu, il te plait ?</h2>",
+                    "Oui !",
+                    "Il y a du chauffage dans les salles ?",
+                    "<h3>AAh tu vas te plaire ici alors !</h3>",
+                    "<h3>Oui au fond des salles ou dans l'amphi 1 </h3>",
+                    "geraldine.jpg",
+                    "Etudiante Geraldine"
+                ];
+                val_ret = this.config_dialogue(zone_dialogue_Geraldine, tab_phrases, p, p_2, select, option_1, option_2,img,h3);
             }
         }
         if(!val_ret){
@@ -294,6 +332,8 @@ class Personnage extends ObjetGraphique {
             p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
             img.setAttribute('src', "");
             img.setAttribute('style', "display:none;");
+            h3.innerHTML=""; //titre
+            h3.setAttribute('style', "display:none;");
         }
         
     }
