@@ -93,10 +93,12 @@ function GameFramework(){
     function creerPersonnage(nom, age, formation){
         //console.log("Dans creer perso");
         let perso = new Personnage(this.w/2, this.h/2, nom, age, formation);//posX et posY
-        let pnj_1 = new PNJ(541,472,"acceuil");
+        let pnj_1 = new PNJ(541,472,"acceuil", POSTE.MAP_ENTREE);
+        let pnj_2 = new PNJ(350,300, "Tounsi", POSTE.MAP_SALLE);
         map = new Map(ctx);
         tableauObjetGraphiques.push(perso);
         tableauObjetGraphiques.push(pnj_1);
+        tableauObjetGraphiques.push(pnj_2);
     }
 
     function reset() {
@@ -246,6 +248,45 @@ class Personnage extends ObjetGraphique {
                 p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
             }
         }
+        if(map.img === "Map_sol.png"){
+            var zone_dialogue_Tounsi = {x: 300, y: 250, width: 100, height: 100};
+            if (perso.x < zone_dialogue_Tounsi.x + zone_dialogue_Tounsi.width && perso.x + perso.width > zone_dialogue_Tounsi.x && perso.y < zone_dialogue_Tounsi.y + zone_dialogue_Tounsi.height && perso.height + perso.y > zone_dialogue_Tounsi.y) {
+                // zone détectée 
+                show_dialogue = true;
+            }else{
+                show_dialogue = false;
+            }
+            if(show_dialogue){
+                
+                p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+                p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
+                
+                select.setAttribute('style', "");
+                var html_code = "";
+                html_code +="<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>";
+                p.innerHTML = html_code;
+                
+                option_1.innerHTML="Il y a le chauffage ?"; //Q1
+                option_2.innerHTML="Vous etes un professeur ?"; //Q2
+                var valeur = select.options[select.selectedIndex].value;
+                if(valeur != "Q0"){
+                    //var button = document.getElementsByTagName('input')[1];
+                    if(valeur === "Q1"){
+                        p_2.innerHTML = "<h3>Oui dans chaque salle</h3>";;
+                    }
+                    if(valeur === "Q2"){
+                        p_2.innerHTML = "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>";
+                    }
+                }
+            }else{
+                p.innerHTML = "";
+                p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
+                option_1.innerHTML=""; //Q1
+                option_2.innerHTML=""; //Q2
+                select.setAttribute('style', "display:none;");
+                p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
+            }
+        }
     }
 
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
@@ -293,6 +334,21 @@ class Personnage extends ObjetGraphique {
                     return true;
                 }
             }
+            var zone_entree = {x: 30, y: 555, width: 500, height: 500}; //zone de l'entree 
+            if (perso.x < zone_entree.x + zone_entree.width && perso.x + perso.width > zone_entree.x && perso.y < zone_entree.y + zone_entree.height && perso.height + perso.y > zone_entree.y){
+                if(dir_event == DIRECTION.BAS){
+                    return true;
+                }
+            }    
+        }
+        if(map.img === "Map_sol.png"){
+            var Tounsi = {x: 350, y: 300, width: 20, height: 20}; //collision avec Tounsi juste devant lui
+            if (perso.x < Tounsi.x + Tounsi.width && perso.x + perso.width > Tounsi.x && perso.y < Tounsi.y + Tounsi.height && perso.height + perso.y > Tounsi.y) {
+                if( dir_event == DIRECTION.GAUCHE){
+                    // zone détectée !
+                    return true;
+                }
+            }
         }
        return false;
     }
@@ -334,16 +390,29 @@ class Personnage extends ObjetGraphique {
     }
 }
 
+var POSTE = {
+    "MAP_ENTREE" :0,
+    "MAP_SALLE"  :1
+}
+
 class PNJ extends ObjetGraphique { //PNJ = Personnage Non Joueur
-    constructor (posX, posY, name) {
+    constructor (posX, posY, name, poste) {
         super(posX, posY, 20, 20);
         this.nom = name;
+        this.poste = poste;
     }
 
     move() {
         var coord = {'x' : this.x, 'y' : this.y};
         var prochaineCase = coord;
         super.move(prochaineCase);
+    }
+
+    dessineCorps(ctx){
+        if(map.img === "Hall_entree.png" && this.poste === POSTE.MAP_ENTREE)
+            super.dessineCorps(ctx);
+        if(map.img === "Map_sol.png" && this.poste === POSTE.MAP_SALLE)
+            super.dessineCorps(ctx);
     }
 }
 
