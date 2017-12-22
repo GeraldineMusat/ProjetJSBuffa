@@ -5,7 +5,6 @@ let old_dir_event;
 let initialisation = false; //false quand il est pas encore initialisé (pas encore apuyé sur une des flèches du clavier)
 let change_pos = false;
 let map;
-let tableauObjetGraphiques=[];
 
 function init(){
   gf = new GameFramework();
@@ -14,6 +13,7 @@ function init(){
 
 function GameFramework(){
     let canvas, ctx, w, h;
+    let tableauObjetGraphiques=[];
 
     function initKey() {
         window.onkeydown = function(event) {
