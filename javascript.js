@@ -203,14 +203,13 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    config_dialogue(zone, tab, p, p_2, select, option_1, option_2){
+    config_dialogue(zone, tab, p, p_2, select, option_1, option_2, img){
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
         
-        //var img = document.getElementsByTagName('img')[0];
         if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
             // zone détectée 
             console.log(tab[0]);
-            //img.setAttribute('style', "");
+            img.setAttribute('style', "");
             p.setAttribute('style', ""); //pour afficher la balise p et son contenu 
             p_2.setAttribute('style', ""); //pour afficher la balise p et son contenu 
             select.setAttribute('style', "");
@@ -219,7 +218,6 @@ class Personnage extends ObjetGraphique {
             option_2.innerHTML=tab[2]; //Q2
             var valeur = select.options[select.selectedIndex].value;
             if(valeur != "Q0"){
-                //var button = document.getElementsByTagName('input')[1];
                 if(valeur === "Q1"){
                     p_2.innerHTML = tab[3];
                 }
@@ -227,7 +225,7 @@ class Personnage extends ObjetGraphique {
                     p_2.innerHTML = tab[4];
                 }
             }
-            //img.setAttribute('scr', tab[5]);
+            img.setAttribute('src', tab[5]);
             return true;
         }else{
            return false;
@@ -236,6 +234,7 @@ class Personnage extends ObjetGraphique {
 
     getZone_dialogue() {
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
+        var img = document.getElementsByTagName('img')[0];
         var p = document.getElementsByTagName('p')[0];
         var p_2 = document.getElementsByTagName('p')[1];
         var select = document.getElementsByTagName('select')[0];
@@ -256,7 +255,7 @@ class Personnage extends ObjetGraphique {
                     "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
                     "accueil.jpg"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_accueil, tab_phrases, p, p_2, select, option_1, option_2);
+                val_ret = this.config_dialogue(zone_dialogue_accueil, tab_phrases, p, p_2, select, option_1, option_2,img);
             }
             zone = zone_dialogue_Buffa;
             if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
@@ -268,7 +267,7 @@ class Personnage extends ObjetGraphique {
                     "<h3>Les profits des étudiants qui intègrent l'école sont : <br/> -des étudiants provenant d'un cursus informatique <br/> -des étudiants provenant d'un cursus de gestion</h3>",
                     "buffa.jpg"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_Buffa, tab_phrases, p, p_2, select, option_1, option_2);
+                val_ret = this.config_dialogue(zone_dialogue_Buffa, tab_phrases, p, p_2, select, option_1, option_2,img);
             }
         }
         if(map.img === "Map_sol.png"){
@@ -283,7 +282,7 @@ class Personnage extends ObjetGraphique {
                     "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
                     "tounsi.jpg"
                 ];
-                val_ret = this.config_dialogue(zone_dialogue_Tounsi, tab_phrases, p, p_2, select, option_1, option_2);
+                val_ret = this.config_dialogue(zone_dialogue_Tounsi, tab_phrases, p, p_2, select, option_1, option_2,img);
             }
         }
         if(!val_ret){
@@ -293,8 +292,8 @@ class Personnage extends ObjetGraphique {
             option_2.innerHTML=""; //Q2
             select.setAttribute('style', "display:none;");
             p_2.setAttribute('style', "display:none;"); //pour cacher la balise p_2 et son contenu 
-            //img.setAttribute('src', "");
-            //img.setAttribute('style', "display:none;");
+            img.setAttribute('src', "");
+            img.setAttribute('style', "display:none;");
         }
         
     }
