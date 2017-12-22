@@ -5,6 +5,7 @@ let old_dir_event;
 let initialisation = false; //false quand il est pas encore initialisé (pas encore apuyé sur une des flèches du clavier)
 let change_pos = false;
 let map;
+let tableauObjetGraphiques=[];
 
 function init(){
   gf = new GameFramework();
@@ -13,7 +14,6 @@ function init(){
 
 function GameFramework(){
     let canvas, ctx, w, h;
-    let tableauObjetGraphiques=[];
 
     function initKey() {
         window.onkeydown = function(event) {
@@ -203,13 +203,9 @@ class Personnage extends ObjetGraphique {
         }
     }
 
-    config_dialogue(zone, tab){
+    config_dialogue(zone, tab, p, p_2, select, option_1, option_2){
         var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
-        var p = document.getElementsByTagName('p')[0];
-        var p_2 = document.getElementsByTagName('p')[1];
-        var select = document.getElementsByTagName('select')[0];
-        var option_1 = document.getElementsByTagName('option')[1]; //Q1
-        var option_2 = document.getElementsByTagName('option')[2]; //Q2
+        
         //var img = document.getElementsByTagName('img')[0];
         if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
             // zone détectée 
@@ -232,7 +228,65 @@ class Personnage extends ObjetGraphique {
                 }
             }
             //img.setAttribute('scr', tab[5]);
+            return true;
         }else{
+           return false;
+        }
+    }
+
+    getZone_dialogue() {
+        var perso = {x: this.x, y: this.y, width: this.width, height: this.width}; //met a jour les coordonées du perso
+        var p = document.getElementsByTagName('p')[0];
+        var p_2 = document.getElementsByTagName('p')[1];
+        var select = document.getElementsByTagName('select')[0];
+        var option_1 = document.getElementsByTagName('option')[1]; //Q1
+        var option_2 = document.getElementsByTagName('option')[2]; //Q2
+        var val_ret;
+        var zone;
+        if(map.img === "Hall_entree.png"){
+            var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
+            var zone_dialogue_Buffa = {x: 170, y: 300, width: 100, height: 100};
+            zone = zone_dialogue_accueil;
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                var tab_phrases = [
+                    "<h2>Bonjour "+ this.nom +", comment puis-je t'aider ?</h2>",
+                    "Ou se trouve le self ?",
+                    "Vous etes un professeur ?",
+                    "<h3>Via notre site internet</h3>",
+                    "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
+                    "accueil.jpg"
+                ];
+                val_ret = this.config_dialogue(zone_dialogue_accueil, tab_phrases, p, p_2, select, option_1, option_2);
+            }
+            zone = zone_dialogue_Buffa;
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                var tab_phrases = [
+                    "<h2>Hello I am Buffa ! I have a very good accent ! And the Js is SO fun !!</h2>",
+                    "Quelles sont vos méthodes de travail en Miage ? Plutôt en groupe, plutôt en solitaire ?",
+                    "Quels sont les profils des étudiants qui intègrent l’école ?",
+                    "<h3>En MIAGE, nos méthodes de travail sont les travails en groupe et seuls afin de développer des compétences pour le  monde le professionel.</h3>",
+                    "<h3>Les profits des étudiants qui intègrent l'école sont : <br/> -des étudiants provenant d'un cursus informatique <br/> -des étudiants provenant d'un cursus de gestion</h3>",
+                    "buffa.jpg"
+                ];
+                val_ret = this.config_dialogue(zone_dialogue_Buffa, tab_phrases, p, p_2, select, option_1, option_2);
+            }
+        }
+        if(map.img === "Map_sol.png"){
+            var zone_dialogue_Tounsi = {x: 300, y: 250, width: 100, height: 100};
+            zone = zone_dialogue_Tounsi;
+            if (perso.x < zone.x + zone.width && perso.x + perso.width > zone.x && perso.y < zone.y + zone.height && perso.height + perso.y > zone.y) {
+                var tab_phrases = [
+                    "<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>",
+                    "Il y a le chauffage ?",
+                    "Vous etes un professeur ?",
+                    "<h3>Oui dans chaque salle</h3>",
+                    "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
+                    "tounsi.jpg"
+                ];
+                val_ret = this.config_dialogue(zone_dialogue_Tounsi, tab_phrases, p, p_2, select, option_1, option_2);
+            }
+        }
+        if(!val_ret){
             p.innerHTML = "";
             p.setAttribute('style', "display:none;"); //pour cacher la balise p et son contenu 
             option_1.innerHTML=""; //Q1
@@ -242,45 +296,7 @@ class Personnage extends ObjetGraphique {
             //img.setAttribute('src', "");
             //img.setAttribute('style', "display:none;");
         }
-    }
-
-    getZone_dialogue() {
         
-        if(map.img === "Hall_entree.png"){
-            var zone_dialogue_accueil = {x: 440, y: 430, width: 40, height: 40};
-            var tab_phrases = [
-                "<h2>Bonjour "+ this.nom +", comment puis-je t'aider ?</h2>",
-                "Ou se trouve le self ?",
-                "Vous etes un professeur ?",
-                "<h3>Via notre site internet</h3>",
-                "<h3>Vers les templiers, à 10 minutes à pieds d'ici</h3>",
-                "buffa.jpg"
-            ];
-            this.config_dialogue(zone_dialogue_accueil, tab_phrases);
-
-            var zone_dialogue_Buffa = {x: 170, y: 300, width: 100, height: 100};
-            var tab_phrases = [
-                "<h2>Hello I am Buffa ! I have a very good accent ! And the Js is SO fun !!</h2>",
-                "Quelles sont vos méthodes de travail en Miage ? Plutôt en groupe, plutôt en solitaire ?",
-                "Quels sont les profils des étudiants qui intègrent l’école ?",
-                "<h3>En MIAGE, nos méthodes de travail sont les travails en groupe et seuls afin de développer des compétences pour le  monde le professionel.</h3>",
-                "<h3>Les profits des étudiants qui intègrent l'école sont : <br/> -des étudiants provenant d'un cursus informatique <br/> -des étudiants provenant d'un cursus de gestion</h3>",
-                "buffa.jpg"
-            ];
-            this.config_dialogue(zone_dialogue_Buffa, tab_phrases);
-        }
-        if(map.img === "Map_sol.png"){
-            var zone_dialogue_Tounsi = {x: 300, y: 250, width: 100, height: 100};
-            var tab_phrases = [
-                "<h2>Bonjour "+ this.nom +" je suis Mr Tounsi, Voici une partie des salles de classe</h2>",
-                "Il y a le chauffage ?",
-                "Vous etes un professeur ?",
-                "<h3>Oui dans chaque salle</h3>",
-                "<h3>Oui, je suis professeur d'étude de marché mais je m'occupe aussi de cette Miage, de la dynamiser</h3>",
-                "buffa.jpg"
-            ];
-            this.config_dialogue(zone_dialogue_Tounsi, tab_phrases);
-        }
     }
 
     testCollision() { // Collisions faites pour les 4 cotés du Canvas 
